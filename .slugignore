@@ -1,6 +1,5 @@
 source/__pycache__
 source/lib/__pycache__
-models
 tasks/mldoc/MLDoc
 embed
 tasks/bucc/downloaded
