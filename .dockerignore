@@ -1,0 +1,16 @@
+source/__pycache__
+source/lib/__pycache__
+models
+tasks/mldoc/MLDoc
+embed
+tasks/bucc/downloaded
+tasks/similarity/dev/
+tasks/similarity/embed/
+tasks/xnli/XNLI-1.0*
+tasks/xnli/multinli_1.0*
+.??*swp
+
+.ipynb_checkpoints
+/tools-external/fastBPE_local
+
+
