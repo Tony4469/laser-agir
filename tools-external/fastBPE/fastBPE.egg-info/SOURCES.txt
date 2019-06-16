@@ -1,8 +1,0 @@
-README.md
-setup.py
-fastBPE/fastBPE.cpp
-fastBPE.egg-info/PKG-INFO
-fastBPE.egg-info/SOURCES.txt
-fastBPE.egg-info/dependency_links.txt
-fastBPE.egg-info/requires.txt
-fastBPE.egg-info/top_level.txt

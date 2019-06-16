@@ -7,7 +7,7 @@ extensions = [
         [ "fastBPE/fastBPE.pyx" ],
         language='c++',
         extra_compile_args=[
-            "-std=c++11", "-stdlib=libc++", "-Ofast", "-pthread"
+            "-std=c++11", "-Ofast", "-pthread"
         ],
     ),
 ]
