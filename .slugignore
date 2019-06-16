@@ -11,3 +11,7 @@ tasks/xnli/multinli_1.0*
 
 .ipynb_checkpoints
 /tools-external/fastBPE_local
+
+/tools-external
+/tasks
+/models
