@@ -14,6 +14,7 @@ import urllib
 
 from source.similarity_search import Similarity
 
+print(os.getcwd())
 app = Flask(__name__)
 api = Api(app)
 
