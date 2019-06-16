@@ -1,15 +1,15 @@
 FROM continuumio/miniconda3:latest
-RUN apt-get update -y
-RUN apt-get install -y build-essential checkinstall curl
+RUN apt-get update && \
+  apt-get install -y --no-install-recommends \
+  build-essential checkinstall curl wget bzip2
+# RUN apt-get install -y build-essential checkinstall curl
 
 # Adding wget and bzip2
-RUN apt-get install -y wget bzip2
+# RUN apt-get install -y wget bzip2
 
 # RUN apt-get install -y libreadline-gplv2-dev libncursesw5-dev libssl-dev \
 #     libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev
 # RUN apt-get install -y apt-utils python3.6 python3-pip python3-dev
-VOLUME /app
-
 # WORKDIR /tmp
 
 # RUN curl -O https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh
@@ -20,20 +20,24 @@ VOLUME /app
 
 WORKDIR /app
 # Updating Anaconda packages
-RUN conda update conda
-RUN conda update --all
+# RUN conda update conda
+# RUN conda update --all
 
-RUN alias python=python3
-RUN alias pip=pip3
-RUN python --version
-RUN pip --version
-RUN pip install flask flask_restful gunicorn requests rq faiss
+# RUN alias python=python3
+# RUN alias pip=pip3
+# RUN python --version
+# RUN pip --version
+RUN pip install flask flask_restful gunicorn requests rq faiss transliterate
 
 RUN conda install faiss-cpu -c pytorch
 RUN conda install pytorch-cpu torchvision-cpu -c pytorch
 
-# COPY . /app
+COPY . /app
 
-ENTRYPOINT [ "python3" ]
+# ENTRYPOINT [ "python3" ]
 
-CMD [ "laser-agir.py" ]
+# CMD [ "laser-agir.py" ]
+CMD gunicorn laser-agir:app --log-level debug
+# --bind 0.0.0.0:$PORT wsgi 
+
+ENV LASER_AGIR /app

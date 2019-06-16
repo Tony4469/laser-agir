@@ -24,7 +24,11 @@ from subprocess import run, check_output, DEVNULL
 # get environment
 LASER = os.getenv('LASER_AGIR', "/Users/tonyparker/Documents/Python/laser-agir/")
 
-FASTBPE = LASER + '/tools-external/fastBPE/fast'
+local=False
+if os.getenv('TERM_PROGRAM','no path') == "Apple_Terminal":
+    local=True
+    
+FASTBPE = LASER + '/tools-external/fastBPE' + ("_local" if local else "") + '/fast'
 MOSES_BDIR = LASER + '/tools-external/moses-tokenizer/tokenizer/'
 MOSES_TOKENIZER = MOSES_BDIR + 'tokenizer.perl -q -no-escape -threads 20 -l '
 MOSES_LC = MOSES_BDIR + 'lowercase.perl'
@@ -73,34 +77,34 @@ def Token(inp_fname, out_fname, lang='en',
           verbose=False, over_write=False, gzip=False):
     assert lower_case, 'lower case is needed by all the models'
     assert not over_write, 'over-write is not yet implemented'
-    if not os.path.isfile(out_fname):
-        cat = 'zcat ' if gzip else 'cat '
-        roman = lang if romanize else 'none'
-        # handle some iso3 langauge codes
-        if lang in ('cmn', 'wuu', 'yue'):
-            lang = 'zh'
-        if lang in ('jpn'):
-            lang = 'ja'
-        if verbose:
-            print(' - Tokenizer: {} in language {} {} {}'
-                  .format(os.path.basename(inp_fname), lang,
-                          '(gzip)' if gzip else '',
-                          '(de-escaped)' if descape else '',
-                          '(romanized)' if romanize else ''))
-        run(cat + inp_fname
-            + '|' + REM_NON_PRINT_CHAR
-            + '|' + NORM_PUNC + lang
-            + ('|' + DESCAPE if descape else '')
-            + '|' + MOSES_TOKENIZER + lang
-            + ('| python3 -m jieba -d ' if lang == 'zh' else '')
-            + ('|' + MECAB + '/bin/mecab -O wakati -b 50000 ' if lang == 'ja' else '')
-            + '|' + ROMAN_LC + roman
-            + '>' + out_fname,
-            env=dict(os.environ, LD_LIBRARY_PATH=MECAB + '/lib'),
-            shell=True)
-    elif not over_write and verbose:
-        print(' - Tokenizer: {} exists already'
-              .format(os.path.basename(out_fname), lang))
+#    if not os.path.isfile(out_fname):
+    cat = 'zcat ' if gzip else 'cat '
+    roman = lang if romanize else 'none'
+    # handle some iso3 langauge codes
+    if lang in ('cmn', 'wuu', 'yue'):
+        lang = 'zh'
+    if lang in ('jpn'):
+        lang = 'ja'
+    if verbose:
+        print(' - Tokenizer: {} in language {} {} {}'
+              .format(os.path.basename(inp_fname), lang,
+                      '(gzip)' if gzip else '',
+                      '(de-escaped)' if descape else '',
+                      '(romanized)' if romanize else ''))
+    run(cat + inp_fname
+        + '|' + REM_NON_PRINT_CHAR
+        + '|' + NORM_PUNC + lang
+        + ('|' + DESCAPE if descape else '')
+        + '|' + MOSES_TOKENIZER + lang
+        + ('| python3 -m jieba -d ' if lang == 'zh' else '')
+        + ('|' + MECAB + '/bin/mecab -O wakati -b 50000 ' if lang == 'ja' else '')
+        + '|' + ROMAN_LC + roman
+        + '>' + out_fname,
+        env=dict(os.environ, LD_LIBRARY_PATH=MECAB + '/lib'),
+        shell=True)
+#    elif not over_write and verbose:
+#        print(' - Tokenizer: {} exists already'
+#              .format(os.path.basename(out_fname), lang))
 
 
 ###############################################################################
@@ -125,21 +129,22 @@ def Token(inp_fname, out_fname, lang='en',
 
 def BPEfastApply(inp_fname, out_fname, bpe_codes,
                  verbose=False, over_write=False):
-    if not os.path.isfile(out_fname):
-        if verbose:
-            print(' - fast BPE: processing {}'
-                  .format(os.path.basename(inp_fname)))
-        bpe_vocab = bpe_codes.replace('fcodes', 'fvocab')
-        if not os.path.isfile(bpe_vocab):
-            print(' - fast BPE: focab file not found {}'.format(bpe_vocab))
-            bpe_vocab = ''
-        run(FASTBPE + ' applybpe '
-            + out_fname + ' ' + inp_fname
-            + ' ' + bpe_codes
-            + ' ' + bpe_vocab, shell=True, stderr=DEVNULL)
-    elif not over_write and verbose:
-        print(' - fast BPE: {} exists already'
-              .format(os.path.basename(out_fname)))
+#    if not os.path.isfile(out_fname):
+    if verbose:
+        print(' - fast BPE: processing {}'
+              .format(os.path.basename(inp_fname)))
+    bpe_vocab = bpe_codes.replace('fcodes', 'fvocab')
+    if not os.path.isfile(bpe_vocab):
+        print(' - fast BPE: vocab file not found {}'.format(bpe_vocab))
+        bpe_vocab = ''
+    
+    check_output(FASTBPE + ' applybpe '
+        + out_fname + ' ' + inp_fname
+        + ' ' + bpe_codes
+        + ' ' + bpe_vocab, shell=True)
+#    elif not over_write and verbose:
+#        print(' - fast BPE: {} exists already'
+#              .format(os.path.basename(out_fname)))
 
 
 ###############################################################################

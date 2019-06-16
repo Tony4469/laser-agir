@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 from os import  getcwd, path
 import os
 from os import listdir
@@ -22,23 +24,16 @@ import subprocess
 ##This will give you the output of the command being executed
 #print("Command faiss output: ",output)
 
-print('chemin', os.getcwd(), os.getenv('LASER_AGIR','no path'))
-
 from source.similarity_search import Similarity
 
 app = Flask(__name__)
 api = Api(app)
 
-
-#On définit notre environnement de travail :
-local=False
-if os.environ["TERM_PROGRAM"] == "Apple_Terminal":
-    local=True
-    
 class LASER(Resource):
     def __init__(self):
         super().__init__()
-        print('initializing')
+        self.similarity = Similarity(p_path=os.getcwd())
+        print('initializing',flush=True)
     
     def start(self):
         #Désactivé pour l'instant
@@ -46,23 +41,31 @@ class LASER(Resource):
         return False
     
     def post(self):
-        print(request.json)
-        print(request.json['sentences'])
+        print(request.json['sentences'],flush=True)
         t0 = time.process_time()
         
         #On enregistre les phrases dans le fichier langue associé
-#        sentences = request.json['sentences']
-#        sentences = [ tuple(sentences[x]) for x in range(len(sentences))]
+        sentences = request.json['sentences']
+        sentences = [ tuple(sentences[x]) for x in range(len(sentences))]
         
-        similarity = Similarity(lang=['en', 'fr'], p_path=os.getcwd())
-        distances, indexes, cosine = similarity.launch()
+        print(sentences, flush=True)
+        lan_sent = set([lan for sent, lan in sentences])
+        print(lan_sent, flush=True)
+        for lan in lan_sent:
+            file = open(os.path.normpath(os.path.join(os.getcwd(), './tasks/similarity/dev/input.'+lan) ),"w", encoding="utf-8") 
+            for sent, lang in sentences:
+                if lang == lan:
+                    file.write( sent + '\n' )
+            file.close() 
+    
+#        similarity = Similarity(lang=['en', 'fr'], p_path=os.getcwd())
+        distances, indexes, cosine = self.similarity.launch(['en', 'fr'])
 
         print(time.process_time() - t0, "seconds process time")
         return json.dumps({'distances': distances, 'indexes': indexes, 'cosine': cosine.tolist(), 'time': time.process_time() - t0})
     
     def get(self):
         return {'employees': "got"}
-
 
 print('initialized')
 #q = Queue(connection=conn)

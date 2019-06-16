@@ -291,18 +291,18 @@ def EncodeFile(encoder, inp_fname, out_fname,
               buffer_size=10000, verbose=False, over_write=False,
               inp_encoding='utf-8'):
     # TODO :handle over write
-    if not os.path.isfile(out_fname):
-        if verbose:
-            print(' - Encoder: {} to {}'.
-                  format(os.path.basename(inp_fname) if len(inp_fname) > 0 else 'stdin',
-                         os.path.basename(out_fname)))
-        fin = open(inp_fname, 'r', encoding=inp_encoding, errors='surrogateescape') if len(inp_fname) > 0 else sys.stdin
-        fout = open(out_fname, mode='wb')
-        EncodeFilep(encoder, fin, fout, buffer_size=buffer_size, verbose=verbose)
-        fin.close()
-        fout.close()
-    elif not over_write and verbose:
-        print(' - Encoder: {} exists already'.format(os.path.basename(out_fname)))
+#    if not os.path.isfile(out_fname):
+    if verbose:
+        print(' - Encoder: {} to {}'.
+              format(os.path.basename(inp_fname) if len(inp_fname) > 0 else 'stdin',
+                     os.path.basename(out_fname)))
+    fin = open(inp_fname, 'r', encoding=inp_encoding, errors='surrogateescape') if len(inp_fname) > 0 else sys.stdin
+    fout = open(out_fname, mode='wb')
+    EncodeFilep(encoder, fin, fout, buffer_size=buffer_size, verbose=verbose)
+    fin.close()
+    fout.close()
+#    elif not over_write and verbose:
+#        print(' - Encoder: {} exists already'.format(os.path.basename(out_fname)))
 
 # Load existing embeddings
 def EmbedLoad(fname, dim=1024, verbose=False):

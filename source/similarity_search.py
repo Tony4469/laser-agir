@@ -39,18 +39,17 @@ class Namespace:
         self.__dict__.update(kwargs)
         
 class Similarity:
-    def __init__(self, lang, p_path):
+    def __init__(self, p_path):
         self.args = Namespace(
                 base_dir=os.path.normpath(os.path.join(p_path, './tasks/similarity') ), 
                 bpe_codes=os.path.normpath(os.path.join(p_path, './models/93langs.fcodes') ), 
                 buffer_size=100, 
                 cpu=False, 
-                data= os.path.normpath(os.path.join(p_path, './tasks/similarity/dev/souf') ), 
+                data= os.path.normpath(os.path.join(p_path, './tasks/similarity/dev/input') ), 
                 encoder= os.path.normpath(os.path.join(p_path, './models/bilstm.93langs.2018-12-26.pt') ), 
-                lang= lang,  #Voir pour passer ce paramètre seulement au moment du lancement
                 max_sentences=None, 
                 max_tokens=12000, 
-                output= os.path.normpath(os.path.join(p_path, './tasks/similarity/embed/souf') ), 
+                output= os.path.normpath(os.path.join(p_path, './tasks/similarity/embed/output') ), 
                 textual=False, 
                 verbose=True)
         self.enc = EncodeLoad(self.args)
@@ -59,7 +58,9 @@ class Similarity:
             print(' - creating directory {}'.format(out_dir))
             os.mkdir(out_dir)
     
-    def launch(self):
+    def launch(self, lang):
+        self.args.lang= lang
+        
         all_data = []
         all_index = []
         for l in self.args.lang:
