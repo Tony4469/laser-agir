@@ -5,3 +5,4 @@ requests
 rq
 faiss
 torch
+conda
