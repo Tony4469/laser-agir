@@ -1,1 +1,2 @@
-faiss-cpu -c conda-forge
+faiss=1.5.3=pypi_0
+faiss-cpu=1.5.2=py37h04f5b5a_1
