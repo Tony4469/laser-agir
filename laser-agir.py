@@ -12,9 +12,11 @@ from flask_restful import Resource, Api
 from threading import Timer
 import urllib 
 
+
+print('chemin', os.getcwd(), os.getenv('LASER_AGIR','no path'))
+
 from source.similarity_search import Similarity
 
-print(os.getcwd())
 app = Flask(__name__)
 api = Api(app)
 
