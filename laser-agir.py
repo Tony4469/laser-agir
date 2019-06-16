@@ -12,6 +12,15 @@ from flask_restful import Resource, Api
 from threading import Timer
 import urllib 
 
+import subprocess
+
+print('installing faiss')    
+process = subprocess.Popen("conda install faiss faiss-cpu -c pytorch", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+(output, err) = process.communicate() #now wait plus that you can send commands to process
+#This makes the wait possible
+p_status = process.wait()
+#This will give you the output of the command being executed
+print("Command faiss output: ",output)
 
 print('chemin', os.getcwd(), os.getenv('LASER_AGIR','no path'))
 
@@ -20,7 +29,6 @@ from source.similarity_search import Similarity
 app = Flask(__name__)
 api = Api(app)
 
-import subprocess
 
 #On définit notre environnement de travail :
 local=False
