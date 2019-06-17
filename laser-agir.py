@@ -48,9 +48,7 @@ class LASER(Resource):
         sentences = request.json['sentences']
         sentences = [ tuple(sentences[x]) for x in range(len(sentences))]
         
-        print(sentences, flush=True)
         lan_sent = set([lan for sent, lan in sentences])
-        print(lan_sent, flush=True)
         for lan in lan_sent:
             file = open(os.path.normpath(os.path.join(os.getcwd(), './tasks/similarity/dev/input.'+lan) ),"w", encoding="utf-8") 
             for sent, lang in sentences:
@@ -59,9 +57,10 @@ class LASER(Resource):
             file.close() 
     
 #        similarity = Similarity(lang=['en', 'fr'], p_path=os.getcwd())
+        print(time.process_time() - t0, " seconds intermediate process time", flush=True)
         distances, indexes, cosine = self.similarity.launch(['en', 'fr'])
 
-        print(time.process_time() - t0, "seconds process time")
+        print(time.process_time() - t0, " seconds process time", flush=True)
         return json.dumps({'distances': distances, 'indexes': indexes, 'cosine': cosine.tolist(), 'time': time.process_time() - t0})
     
     def get(self):

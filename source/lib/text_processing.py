@@ -138,7 +138,7 @@ def BPEfastApply(inp_fname, out_fname, bpe_codes,
         print(' - fast BPE: vocab file not found {}'.format(bpe_vocab))
         bpe_vocab = ''
     
-    check_output(FASTBPE + ' applybpe '
+    run(FASTBPE + ' applybpe '
         + out_fname + ' ' + inp_fname
         + ' ' + bpe_codes
         + ' ' + bpe_vocab, shell=True)
